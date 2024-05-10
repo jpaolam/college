@@ -80,7 +80,17 @@
                         <tr class="">
                             <td scope="row">{{ libro[0] }}</td>
                             <td>{{ libro[1] }}</td>
-                            <td>{{ libro[2] }}</td>
+                            <td>
+                                <img
+                                    width="60px"
+                                    src="/img/{{ libro[2] }}"
+                                    class="img-fluid rounded-top"
+                                    alt="ups"
+                                />
+                                
+                                {{ libro[2] }}
+
+                            </td>
                             <td>{{ libro[3] }}</td>
                             <td>
                                 <form action="/admin/libros/borrar" method="post">

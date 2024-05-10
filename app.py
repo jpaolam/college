@@ -1,8 +1,11 @@
 #Lo que esto es importar la plantilla html
 #con render_template
+import os
 from flask import Flask
 from flask import render_template, request, redirect
 from flaskext.mysql import MySQL
+from datetime import datetime
+from flask import send_from_directory #para obtener info de la imagen
 
 #se crea la aplicación
 app = Flask(__name__)
@@ -22,6 +25,11 @@ mysql.init_app(app)
 def inicio():
     #se hace una ruta de acceso y se renderiza
     return render_template('site/index.html')
+
+@app.route('/img/<imagen>')
+def imagenes(imagen):
+    print(imagen)
+    return send_from_directory(os.path.join('templates/site/img'),imagen)
 
 @app.route('/libros')
 def libros():
@@ -59,8 +67,16 @@ def admin_libros_guardar():
     _url=request.form['txtDescarga']
     _archivo=request.files['imagen']
 
+    tiempo = datetime.now()
+    #String de hora actual
+    horaActual=tiempo.strftime('%Y%H%M%S')
+
+    if _archivo.filename!="":
+        nuevoNombre=horaActual+"_"+_archivo.filename
+        _archivo.save("templates/site/img/"+nuevoNombre)
+
     sql="INSERT INTO `libros` (`id`, `nombre`, `imagen`, `url`) VALUES (NULL, %s, %s, %s);"
-    datos=(_nombre,_archivo.filename,_url)
+    datos=(_nombre,nuevoNombre,_url)
     conexion=mysql.connect()
     cursor=conexion.cursor()
     cursor.execute(sql,datos)
