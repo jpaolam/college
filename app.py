@@ -1,23 +1,15 @@
-#Lo que esto es importar la plantilla html
-#con render_template
 import os
-from flask import Flask
-from flask import render_template, request, redirect, session
-from flaskext.mysql import MySQL
+from flask import Flask, render_template, request, redirect, session
+from config.db import Database
 from datetime import datetime
+from models.libros import LibrosModel
 from flask import send_from_directory #para obtener info de la imagen
 
-#se crea la aplicación
 app = Flask(__name__)
-app.secret_key="develoteca"
-mysql= MySQL()
+app.secret_key = "develoteca"
 
-app.config['MYSQL_DATABASE_HOST']='localhost'
-app.config['MYSQL_DATABASE_USER']='root'
-app.config['MYSQL_DATABASE_PASSWORD']=''
-app.config['MYSQL_DATABASE_DB']='sitio'
-#inicializar
-mysql.init_app(app)
+db = Database(app)
+libros_model = LibrosModel(db)
 
 #Capturamos lo que el usuario pondra en el navegador
 @app.route('/')
@@ -30,18 +22,11 @@ def inicio():
 @app.route('/img/<imagen>')
 def imagenes(imagen):
     print(imagen)
-    return send_from_directory(os.path.join('templates/site/img'),imagen)
+    return send_from_directory(os.path.join('src/img/'),imagen)
 
 @app.route('/libros')
 def libros():
-    #conexion
-    conexion=mysql.connect()
-    cursor=conexion.cursor()
-    cursor.execute("SELECT * FROM `libros`")
-    #recuperar todo
-    libros=cursor.fetchall()
-    conexion.commit()
-    print(libros)
+    libros= libros_model.obtener_libros()
 
     return render_template('site/libros.html', libros=libros)
 @app.route('/nosotros')
@@ -77,14 +62,7 @@ def admin_libros():
     if not 'login' in session:
         return redirect('/admin/login')
 
-    #conexion
-    conexion=mysql.connect()
-    cursor=conexion.cursor()
-    cursor.execute("SELECT * FROM `libros`")
-    #recuperar todo
-    libros=cursor.fetchall()
-    conexion.commit()
-    print(libros)
+    libros= libros_model.obtener_libros()
     return render_template('admin/libros.html', libros=libros)
 
 @app.route('/admin/cerrar')
@@ -102,51 +80,16 @@ def admin_libros_guardar():
     _url=request.form['txtDescarga']
     _archivo=request.files['imagen']
 
-    tiempo = datetime.now()
-    #String de hora actual
-    horaActual=tiempo.strftime('%Y%H%M%S')
-
-    if _archivo.filename!="":
-        nuevoNombre=horaActual+"_"+_archivo.filename
-        _archivo.save("templates/site/img/"+nuevoNombre)
-
-    sql="INSERT INTO `libros` (`id`, `nombre`, `imagen`, `url`) VALUES (NULL, %s, %s, %s);"
-    datos=(_nombre,nuevoNombre,_url)
-    conexion=mysql.connect()
-    cursor=conexion.cursor()
-    cursor.execute(sql,datos)
-    conexion.commit()
-
-    print(_nombre)
-    print(_url)
-    print(_archivo)
-
+    libros_model.guardar_libro(_nombre, _url, _archivo)
     return redirect('/admin/libros')
 
 @app.route('/admin/libros/borrar', methods=['POST'])
 def admin_libros_borrar():
-    if not 'login' in session:
+    if 'login' not in session:
         return redirect('/admin/login')
-    #se va a recolectar
-    _id=request.form['txtID']
-    print(_id)
-    conexion=mysql.connect()
-    cursor=conexion.cursor()
-    cursor.execute("SELECT imagen FROM `libros` WHERE id=%s", (_id))
-    #recuperar todo
-    libro=cursor.fetchall()
-    conexion.commit()
-    print(libro)
-
-    if os.path.exists("templates/site/img/"+str(libro[0][0])):
-        os.unlink("templates/site/img/"+str(libro[0][0]))
-
-    #BORRAR
-    conexion=mysql.connect()
-    cursor=conexion.cursor()
-    cursor.execute("DELETE FROM `libros` WHERE id=%s", (_id))
-    conexion.commit()
-
+    
+    libro_id = request.form['txtID']
+    libros_model.borrar_libro(libro_id)
     return redirect('/admin/libros')
 
 #Se consulta si la app está lista y se hace en un modo debug
