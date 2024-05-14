@@ -8,6 +8,7 @@
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
+        <link rel="stylesheet" href="/css/login.css">
 
         <!-- Bootstrap CSS v5.2.1 -->
         <link
@@ -15,6 +16,7 @@
             rel="stylesheet"
             integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
             crossorigin="anonymous"
+
         />
     </head>
 
@@ -25,20 +27,27 @@
         <main>
             <div class="container">
                 <div class="row">
-                    <div
-                        class="col-md-4"
-                    >
-                       
+                    <!-- Columna para la imagen -->
+                    <div class="col-md-6">
+                        <div class="log_img_container">
+                            <img src="/img/CollegeLogo.jpg" alt="" class="log_img" />
+                        </div>
                     </div>
-                    <div
-                        class="col-md-4"
-                    >
-                    <br>
-                        <div class="card">
-                            <div class="card-header">Inicio de sesión</div>
+                    
+                    <!-- Columna para el formulario -->
+                    <div class="col-md-6 d-flex flex-column align-items-center justify-content-center">
+                        <div class="mb-lg-3 align-items-center">
+                            <center>
+                                <h1 class="text_login">WELCOME!</h1>
+                                <h3 class="text_login">Login to your account</h3>
+                            </center>
+                            <hr>
+                        </div>
+                        <div class="card mx-auto">
+                            <div class="card-header">Please log in</div>
                             <div class="card-body">
                                 <form action="/admin/login" method="post">
-                                    <div class="mb-3">
+                                    <div class="mb-lg-3">
                                         <label for="txtUsuario" class="form-label">Usuario</label>
                                         <input
                                             type="text"
@@ -60,26 +69,14 @@
                                         />
                                     </div>
                                     
-                                    <button
-                                        type="submit"
-                                        class="btn btn-success"
-                                    >
-                                        Ingresar
-                                    </button>
-                                    
+                                    <div class="d-grid gap-2 col-6 mx-auto">
+                                        <button type="submit" class="btn btn-info">Login</button>
+                                    </div>
                                 </form>
                             </div>
                             <div class="card-footer text-muted"></div>
                         </div>
-                        
-                        
                     </div>
-                    <div
-                        class="col-md-4"
-                    >
-                        
-                    </div>
-                    
                 </div>
             </div>
             

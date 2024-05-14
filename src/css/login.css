@@ -1,0 +1,26 @@
+.log_img_container {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100%; /* Ajusta la altura para centrar verticalmente */
+}
+
+.log_img {
+    margin-top: 10%;
+    overflow: hidden;
+    width: auto;
+    height: 80vh;
+    border-radius: 50%;
+}
+
+/* Media query para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .log_img {
+        height: 20vh; /* Ajusta el tamaño de la imagen */
+        margin-bottom: 20px; /* Añade un margen inferior para separarla del formulario */
+    }
+}
+
+.text_login{
+    color: rgb(3, 3, 75);
+}

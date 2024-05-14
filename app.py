@@ -18,16 +18,23 @@ def inicio():
     #se hace una ruta de acceso y se renderiza
     return render_template('site/index.html')
 
+#Conseguir la imagen  de la carpeta de imagenes
 @app.route('/img/<imagen>')
 def imagenes(imagen):
     print(imagen)
     return send_from_directory(os.path.join('src/img/'),imagen)
 
+#conseguir los estilos de la carpeta CSS
+@app.route('/css/<path:filename>')
+def serve_css(filename):
+    print(filename)
+    return send_from_directory('src/css/', filename)
+
 @app.route('/libros')
 def libros():
     libros= libros_model.obtener_libros()
-
     return render_template('site/libros.html', libros=libros)
+
 @app.route('/nosotros')
 def nosotros():
     return render_template('site/nosotros.html')
